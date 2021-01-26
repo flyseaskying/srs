@@ -449,6 +449,12 @@ srs_error_t SrsStatistic::on_client(SrsContextId cid, SrsRequest* req, ISrsExpir
     client->type = type;
     stream->nb_clients++;
     vhost->nb_clients++;
+
+
+    srs_trace("cys SrsStatistic::on_client, client->id = %s, url = %s, stream = %s, conn = %p, stream->nb_clients = %d, vhost->nb_clients = %d, type = %d",
+        client->id.c_str(), req->get_stream_url().c_str(), stream->stream.c_str(), conn, 
+        stream->nb_clients, vhost->nb_clients, type);
+
     
     return err;
 }
@@ -466,12 +472,17 @@ void SrsStatistic::on_disconnect(const SrsContextId& cid)
     SrsStatisticClient* client = it->second;
     SrsStatisticStream* stream = client->stream;
     SrsStatisticVhost* vhost = stream->vhost;
+
+    srs_trace("cys SrsStatistic::on_disconnect, client->id = %s, stream = %s, stream->nb_clients = %d, vhost->nb_clients = %d",
+        client->id.c_str(), stream->stream.c_str(), stream->nb_clients-1, vhost->nb_clients-1);
     
     srs_freep(client);
     clients.erase(it);
     
     stream->nb_clients--;
     vhost->nb_clients--;
+
+    
 }
 
 void SrsStatistic::kbps_add_delta(const SrsContextId& cid, ISrsKbpsDelta* delta)

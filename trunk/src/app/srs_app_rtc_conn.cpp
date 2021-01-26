@@ -407,6 +407,11 @@ SrsRtcPlayStream::~SrsRtcPlayStream()
     srs_freep(timer_);
     srs_freep(req_);
 
+
+    //cys rtc counter
+    SrsStatistic* stat = SrsStatistic::instance();
+    stat->on_disconnect(_srs_context->get_id());
+
     if (true) {
         std::map<uint32_t, SrsRtcAudioSendTrack*>::iterator it;
         for (it = audio_tracks_.begin(); it != audio_tracks_.end(); ++it) {
@@ -554,6 +559,14 @@ srs_error_t SrsRtcPlayStream::cycle()
 
     bool stat_enabled = _srs_config->get_rtc_server_perf_stat();
     SrsStatistic* stat = SrsStatistic::instance();
+
+
+    // cys rtc counter
+    if ((err = stat->on_client(_srs_context->get_id(), req_, 0, SrsRtmpConnUnknown)) != srs_success) {
+        srs_error("cys stat->on_client error");
+        return srs_error_wrap(err, "rtc: stat client");
+    }
+
 
     // TODO: FIXME: Use cache for performance?
     vector<SrsRtpPacket2*> pkts;
