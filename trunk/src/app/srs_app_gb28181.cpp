@@ -1901,6 +1901,7 @@ SrsGb28181Manger::SrsGb28181Manger(SrsServer *s, SrsConfDirective* c)
     server = s;
     config = new SrsGb28181Config(c);
     manager = new SrsResourceManager("GB28181");
+    sip_service = NULL;
 }
 
 SrsGb28181Manger::~SrsGb28181Manger()
