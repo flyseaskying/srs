@@ -44,6 +44,10 @@
 #include <srs_app_pithy_print.hpp>
 #include <srs_app_log.hpp>
 
+#include <srs_app_http_api.hpp>
+#include <srs_app_statistic.hpp>
+
+
 #ifdef SRS_FFMPEG_FIT
 #include <srs_app_rtc_codec.hpp>
 #endif
@@ -152,6 +156,13 @@ SrsRtcConsumer::SrsRtcConsumer(SrsRtcStream* s)
 SrsRtcConsumer::~SrsRtcConsumer()
 {
     source->on_consumer_destroy(this);
+
+
+    //cys rtc counter
+    srs_trace("cys SrsRtcConsumer::~SrsRtcConsumer()");
+    SrsStatistic* stat = SrsStatistic::instance();
+    stat->on_disconnect(_srs_context->get_id());
+
 
     vector<SrsRtpPacket2*>::iterator it;
     for (it = queue.begin(); it != queue.end(); ++it) {

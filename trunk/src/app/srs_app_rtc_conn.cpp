@@ -408,10 +408,6 @@ SrsRtcPlayStream::~SrsRtcPlayStream()
     srs_freep(req_);
 
 
-    //cys rtc counter
-    SrsStatistic* stat = SrsStatistic::instance();
-    stat->on_disconnect(_srs_context->get_id());
-
     if (true) {
         std::map<uint32_t, SrsRtcAudioSendTrack*>::iterator it;
         for (it = audio_tracks_.begin(); it != audio_tracks_.end(); ++it) {
@@ -638,6 +634,9 @@ srs_error_t SrsRtcPlayStream::cycle()
                 info.nn_rtp_bytes, info.nn_padding_bytes, info.nn_paddings, msg_count, msg_count);
         }
     }
+
+
+    return err;
 }
 
 srs_error_t SrsRtcPlayStream::send_packets(SrsRtcStream* source, const vector<SrsRtpPacket2*>& pkts, SrsRtcPlayStreamStatistic& info)
